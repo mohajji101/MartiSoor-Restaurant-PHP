@@ -7,7 +7,24 @@ $subtotal = 0;
 foreach ($cart as $item) {
     $subtotal += $item['price'] * $item['quantity'];
 }
-$shipping = $subtotal > 0 ? 5.00 : 0;
+$pdo = get_db_connection();
+$delivery_fee_setting = get_setting($pdo, 'delivery_fee', '0.00');
+$free_delivery_threshold_setting = get_setting($pdo, 'free_delivery_threshold', '0.00');
+
+$delivery_fee = (float)$delivery_fee_setting;
+$free_delivery_threshold = (float)$free_delivery_threshold_setting;
+
+// Calculate shipping: if subtotal >= threshold (and threshold > 0), free shipping. Else use fee.
+if ($subtotal > 0) {
+    if ($free_delivery_threshold > 0 && $subtotal >= $free_delivery_threshold) {
+        $shipping = 0;
+    } else {
+        $shipping = $delivery_fee;
+    }
+} else {
+    $shipping = 0;
+}
+
 $total = $subtotal + $shipping;
 ?>
 
@@ -93,7 +110,7 @@ $total = $subtotal + $shipping;
                         
                         <div class="mt-6 flex items-center justify-center gap-2 text-slate-400 text-sm">
                             <i class="fas fa-lock text-xs"></i>
-                            <span>Secure Checkout by Restaurant Pro</span>
+                            <span>Secure Checkout by MartiSoor</span>
                         </div>
                     </div>
                 </div>

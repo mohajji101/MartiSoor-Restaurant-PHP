@@ -22,8 +22,8 @@
             <div class="flex justify-between h-16 items-center">
                 <div class="flex items-center">
                     <a href="/" class="text-2xl font-bold text-orange-600 flex items-center gap-2">
-                        <i class="fas fa-utensils"></i>
-                        <span>MartiSoor</span>
+                    <img src="/images/Marti Logo.png" alt="MartiSoor" class="h-10 w-auto object-contain">
+                        <span class="text-2xl font-bold text-orange-600 ml-2">MartiSoor</span>
                     </a>
                 </div>
                 

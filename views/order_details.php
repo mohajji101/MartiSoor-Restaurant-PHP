@@ -15,12 +15,24 @@ if (!$order_id) {
 }
 
 // Fetch order info
-$stmt = $pdo->prepare("SELECT * FROM orders WHERE id = ? AND user_id = ?");
-$stmt->execute([$order_id, $user_id]);
+if ($_SESSION['user']['role'] === 'admin') {
+    // Admin can view any order
+    $stmt = $pdo->prepare("SELECT * FROM orders WHERE id = ?");
+    $stmt->execute([$order_id]);
+} else {
+    // Customers can only view their own orders
+    $stmt = $pdo->prepare("SELECT * FROM orders WHERE id = ? AND user_id = ?");
+    $stmt->execute([$order_id, $user_id]);
+}
 $order = $stmt->fetch();
 
 if (!$order) {
-    header('Location: /orders');
+    // If not found, redirect appropriately
+    if ($_SESSION['user']['role'] === 'admin') {
+        header('Location: /admin/orders');
+    } else {
+        header('Location: /orders');
+    }
     exit;
 }
 
@@ -36,7 +48,11 @@ include __DIR__ . '/partials/header.php';
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="mb-12 flex items-center justify-between">
             <div>
-                <a href="/orders" class="text-slate-400 hover:text-orange-600 transition mb-4 inline-block"><i class="fas fa-arrow-left mr-2"></i> Back to History</a>
+                <?php if ($_SESSION['user']['role'] === 'admin'): ?>
+                    <a href="/admin/orders" class="text-slate-400 hover:text-orange-600 transition mb-4 inline-block"><i class="fas fa-arrow-left mr-2"></i> Back to Dashboard</a>
+                <?php else: ?>
+                    <a href="/orders" class="text-slate-400 hover:text-orange-600 transition mb-4 inline-block"><i class="fas fa-arrow-left mr-2"></i> Back to History</a>
+                <?php endif; ?>
                 <h1 class="text-4xl font-bold text-slate-900">Order Details</h1>
                 <p class="text-slate-500">Order #ORD-<?php echo str_pad($order['id'], 5, '0', STR_PAD_LEFT); ?></p>
             </div>

@@ -7,8 +7,8 @@
             <div class="grid grid-cols-1 md:grid-cols-4 gap-12">
                 <div class="col-span-1 md:col-span-1">
                     <a href="./" class="text-2xl font-bold text-white flex items-center gap-2 mb-6">
-                        <i class="fas fa-utensils text-orange-500"></i>
-                        <span>Restaurant Pro</span>
+                        <img src="/images/Marti Logo.png" alt="MartiSoor" class="h-8 w-auto">
+                        <span class="text-2xl font-bold text-white ml-2">MartiSoor</span>
                     </a>
                     <p class="text-sm leading-relaxed">
                         Experience the best gourmet dining in town. Fresh ingredients, expert chefs, and a passion for flavor.
@@ -48,7 +48,7 @@
             </div>
             
             <div class="mt-12 pt-8 border-t border-slate-800 text-center text-sm">
-                <p>&copy; <?php echo date('Y'); ?> Restaurant Pro. All rights reserved.</p>
+                <p>&copy; <?php echo date('Y'); ?> MartiSoor Restaurant. All rights reserved.</p>
             </div>
         </div>
     </footer>

@@ -27,10 +27,22 @@ function get_setting($pdo, $key, $default = '') {
 
 function update_setting($pdo, $key, $value) {
     try {
-        $stmt = $pdo->prepare("INSERT INTO system_settings (setting_key, setting_value) VALUES (?, ?) 
-                              ON CONFLICT (setting_key) DO UPDATE SET setting_value = EXCLUDED.setting_value, updated_at = CURRENT_TIMESTAMP");
-        return $stmt->execute([$key, $value]);
+        // Check if exists
+        $stmt = $pdo->prepare("SELECT COUNT(*) FROM system_settings WHERE setting_key = ?");
+        $stmt->execute([$key]);
+        $exists = $stmt->fetchColumn() > 0;
+
+        $timestamp = date('Y-m-d H:i:s');
+        
+        if ($exists) {
+            $stmt = $pdo->prepare("UPDATE system_settings SET setting_value = ?, updated_at = ? WHERE setting_key = ?");
+            return $stmt->execute([$value, $timestamp, $key]);
+        } else {
+            $stmt = $pdo->prepare("INSERT INTO system_settings (setting_key, setting_value, updated_at) VALUES (?, ?, ?)");
+            return $stmt->execute([$key, $value, $timestamp]);
+        }
     } catch (PDOException $e) {
+        file_put_contents(__DIR__ . '/../../db_errors.txt', $e->getMessage() . PHP_EOL, FILE_APPEND);
         return false;
     }
 }

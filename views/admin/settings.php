@@ -27,6 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $success_msg = "Settings updated successfully!";
 }
 
+// Ensure we fetch the LATEST settings after any updates
 $settings = get_settings($pdo);
 
 include __DIR__ . '/../../views/partials/header.php';

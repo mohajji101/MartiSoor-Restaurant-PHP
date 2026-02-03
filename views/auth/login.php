@@ -38,7 +38,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <div>
             <h2 class="mt-6 text-center text-3xl font-extrabold text-slate-900">Sign in to your account</h2>
             <p class="mt-2 text-center text-sm text-slate-600">
-                Welcome back to Restaurant Pro
+                Welcome back to MartiSoor Restaurant
             </p>
         </div>
         

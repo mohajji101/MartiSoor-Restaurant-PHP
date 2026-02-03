@@ -17,8 +17,12 @@ foreach ($cart as $item) {
 }
 
 $pdo = get_db_connection();
-$delivery_fee = (float)get_setting($pdo, 'delivery_fee', '5.00');
-$free_delivery_threshold = (float)get_setting($pdo, 'free_delivery_threshold', '1000.00');
+// Fetch current settings, defaulting to 0 if not set, strictly following admin configuration.
+$delivery_fee_setting = get_setting($pdo, 'delivery_fee', '0.00'); 
+$free_delivery_threshold_setting = get_setting($pdo, 'free_delivery_threshold', '0.00');
+
+$delivery_fee = (float)$delivery_fee_setting;
+$free_delivery_threshold = (float)$free_delivery_threshold_setting;
 
 // Calculate shipping
 $shipping = ($subtotal >= $free_delivery_threshold) ? 0 : $delivery_fee;
