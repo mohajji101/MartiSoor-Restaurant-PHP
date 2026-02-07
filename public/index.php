@@ -1,25 +1,32 @@
 <?php
 // public/index.php
 
+// Start the session
+// Bilow fadhiga (session)
 session_start();
 
+// Include helper files and configuration
+// Soo qaado faylasha caawinaada iyo habeynta
 require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../src/Helpers/security.php';
 require_once __DIR__ . '/../src/Helpers/settings.php';
 
 // Simple Router
+// Nidaamka fudud ee kala hagida (Router)
 $request = $_SERVER['REQUEST_URI'];
 $base_path = '/PHP/Projects/Restaurant-Ordering-System/public'; // Adjust depending on server setup
 $request = str_replace($base_path, '', $request);
 $request = explode('?', $request)[0];
 
 // Basic Routing Logic
+// Logic-ga aasaasiga ah ee marinka
 switch ($request) {
     case '/':
     case '':
         require_once __DIR__ . '/../views/home.php';
         break;
-    
+
+    // Auth Routes / Wadooyinka Soo-galida
     case '/login':
         require_once __DIR__ . '/../views/auth/login.php';
         break;
@@ -40,6 +47,7 @@ switch ($request) {
         require_once __DIR__ . '/../views/profile.php';
         break;
 
+    // User Routes / Wadooyinka Macmiilka
     case '/orders':
         require_once __DIR__ . '/../views/orders.php';
         break;
@@ -53,6 +61,7 @@ switch ($request) {
         header('Location: ./login');
         break;
 
+    // Admin Routes / Wadooyinka Maamulka
     case '/admin':
         require_once __DIR__ . '/../views/admin/dashboard.php';
         break;
@@ -108,6 +117,7 @@ switch ($request) {
         require_once __DIR__ . '/../views/admin/settings.php';
         break;
 
+    // Product & Cart Routes / Wadooyinka Alaabta iyo Gaariga
     case '/products':
         require_once __DIR__ . '/../views/products.php';
         break;
@@ -124,6 +134,7 @@ switch ($request) {
         require_once __DIR__ . '/../views/checkout.php';
         break;
 
+    // 404 Error
     default:
         http_response_code(404);
         require_once __DIR__ . '/../views/404.php';

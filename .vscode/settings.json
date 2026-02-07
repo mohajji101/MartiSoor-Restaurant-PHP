@@ -1,0 +1,7 @@
+{
+    "php.validate.executablePath": "c:\\xampp\\php\\php.exe",
+    "php.executablePath": "c:\\xampp\\php\\php.exe",
+    "php.executables": {
+        "v8.2": "c:\\xampp\\php\\php.exe" 
+    }
+}

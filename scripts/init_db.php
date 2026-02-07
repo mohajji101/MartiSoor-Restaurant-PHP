@@ -1,11 +1,16 @@
 <?php
 // scripts/init_db.php
+
+// Include database config
+// Soo qaado xogta database-ka
 require_once __DIR__ . '/../config/database.php';
 
 $pdo = get_db_connection();
 
+// SQL Schema Definition
+// Qorida nidaamka (Schema) ee Database-ka
 $schema = "
--- Categories table
+-- Categories table / Jadwalka Qaybaha
 CREATE TABLE IF NOT EXISTS categories (
     id SERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL UNIQUE,
@@ -13,7 +18,7 @@ CREATE TABLE IF NOT EXISTS categories (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Users table
+-- Users table / Jadwalka Isticmaalayaasha
 CREATE TABLE IF NOT EXISTS users (
     id SERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
@@ -23,7 +28,7 @@ CREATE TABLE IF NOT EXISTS users (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Products table
+-- Products table / Jadwalka Alaabta
 CREATE TABLE IF NOT EXISTS products (
     id SERIAL PRIMARY KEY,
     title VARCHAR(255) NOT NULL,
@@ -33,7 +38,7 @@ CREATE TABLE IF NOT EXISTS products (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Orders table
+-- Orders table / Jadwalka Dalabyada
 CREATE TABLE IF NOT EXISTS orders (
     id SERIAL PRIMARY KEY,
     user_id INT REFERENCES users(id) ON DELETE SET NULL,
@@ -46,7 +51,7 @@ CREATE TABLE IF NOT EXISTS orders (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Order Items table
+-- Order Items table / Jadwalka Alaabta Dalabka ku jirta
 CREATE TABLE IF NOT EXISTS order_items (
     id SERIAL PRIMARY KEY,
     order_id INT REFERENCES orders(id) ON DELETE CASCADE,
@@ -60,6 +65,8 @@ CREATE TABLE IF NOT EXISTS order_items (
 ";
 
 try {
+    // Execute the schema SQL
+    // Fuli amarka SQL-ka
     $pdo->exec($schema);
     echo "Database schema initialized successfully.\n";
 } catch (PDOException $e) {

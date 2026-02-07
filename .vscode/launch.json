@@ -1,0 +1,26 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Listen for XDebug",
+            "type": "php",
+            "request": "launch",
+            "port": 9003
+        },
+        {
+            "name": "Launch Built-in Server",
+            "type": "php",
+            "request": "launch",
+            "runtimeArgs": [
+                "-S",
+                "localhost:8000",
+                "-t",
+                "public"
+            ],
+            "program": "",
+            "runtimeExecutable": "c:\\xampp\\php\\php.exe",
+            "cwd": "${workspaceFolder}",
+            "port": 9003
+        }
+    ]
+}

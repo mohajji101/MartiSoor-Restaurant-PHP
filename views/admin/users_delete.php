@@ -8,8 +8,11 @@ if (!isset($_SESSION['user']) || $_SESSION['user']['role'] !== 'admin') {
 $id = $_GET['id'] ?? null;
 
 // Prevent self-deletion
+// Ka hortag in qofku isaga is tiro
 if ($id && $id != $_SESSION['user']['id']) {
     $pdo = get_db_connection();
+    // Delete user
+    // Tir isticmaalaha
     $stmt = $pdo->prepare("DELETE FROM users WHERE id = ?");
     $stmt->execute([$id]);
 }

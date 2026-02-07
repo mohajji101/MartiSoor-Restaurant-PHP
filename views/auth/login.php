@@ -3,21 +3,34 @@
 include __DIR__ . '/../partials/header.php';
 
 $errors = [];
+// Check if form is submitted
+// Hubi haddii foomka la soo diray
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = trim($_POST['email'] ?? '');
     $password = $_POST['password'] ?? '';
 
-    if (empty($email)) $errors[] = "Email is required.";
-    if (empty($password)) $errors[] = "Password is required.";
-    if (!verify_csrf_token($_POST['csrf_token'] ?? '')) $errors[] = "Invalid CSRF token.";
+    // Validate inputs
+    // Hubi xogta la geliyay
+    if (empty($email))
+        $errors[] = "Email is required.";
+    if (empty($password))
+        $errors[] = "Password is required.";
+    if (!verify_csrf_token($_POST['csrf_token'] ?? ''))
+        $errors[] = "Invalid CSRF token.";
 
     if (empty($errors)) {
         $pdo = get_db_connection();
+        // Fetch user by email
+        // Soo hel isticmaalaha adigoo isticmaalaya email-ka
         $stmt = $pdo->prepare("SELECT * FROM users WHERE email = ?");
         $stmt->execute([$email]);
         $user = $stmt->fetch();
 
+        // Verify password
+        // Hubi furaha (password)
         if ($user && password_verify($password, $user['password'])) {
+            // Set session variables
+            // Deji xogta fadhiga (session)
             $_SESSION['user'] = [
                 'id' => $user['id'],
                 'name' => $user['name'],
@@ -41,14 +54,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 Welcome back to MartiSoor Restaurant
             </p>
         </div>
-        
+
         <?php if (!empty($errors)): ?>
             <div class="bg-red-50 border-l-4 border-red-500 p-4 mb-4">
                 <div class="flex">
                     <div class="flex-shrink-0"><i class="fas fa-exclamation-circle text-red-500"></i></div>
                     <div class="ml-3">
                         <p class="text-sm text-red-700">
-                            <?php foreach ($errors as $error) echo htmlspecialchars($error) . '<br>'; ?>
+                            <?php foreach ($errors as $error)
+                                echo htmlspecialchars($error) . '<br>'; ?>
                         </p>
                     </div>
                 </div>
@@ -60,17 +74,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <div class="space-y-4">
                 <div>
                     <label for="email" class="block text-sm font-medium text-slate-700">Email address</label>
-                    <input id="email" name="email" type="email" required class="mt-1 block w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition" placeholder="john@example.com">
+                    <input id="email" name="email" type="email" required
+                        class="mt-1 block w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition"
+                        placeholder="john@example.com">
                 </div>
                 <div>
                     <label for="password" class="block text-sm font-medium text-slate-700">Password</label>
-                    <input id="password" name="password" type="password" required class="mt-1 block w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition" placeholder="••••••••">
+                    <input id="password" name="password" type="password" required
+                        class="mt-1 block w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition"
+                        placeholder="••••••••">
                 </div>
             </div>
 
             <div class="flex items-center justify-between">
                 <div class="flex items-center">
-                    <input id="remember-me" name="remember-me" type="checkbox" class="h-4 w-4 text-orange-600 focus:ring-orange-500 border-slate-300 rounded">
+                    <input id="remember-me" name="remember-me" type="checkbox"
+                        class="h-4 w-4 text-orange-600 focus:ring-orange-500 border-slate-300 rounded">
                     <label for="remember-me" class="ml-2 block text-sm text-slate-900">
                         Remember me
                     </label>
@@ -84,14 +103,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
 
             <div>
-                <button type="submit" class="group relative w-full flex justify-center py-4 px-4 border border-transparent text-sm font-bold rounded-xl text-white bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 transition shadow-lg shadow-orange-200">
+                <button type="submit"
+                    class="group relative w-full flex justify-center py-4 px-4 border border-transparent text-sm font-bold rounded-xl text-white bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 transition shadow-lg shadow-orange-200">
                     Sign in
                 </button>
             </div>
-            
+
             <div class="text-center">
                 <p class="text-sm text-slate-600">
-                    Don't have an account? <a href="./register" class="font-bold text-orange-600 hover:text-orange-500 transition">Sign up</a>
+                    Don't have an account? <a href="./register"
+                        class="font-bold text-orange-600 hover:text-orange-500 transition">Sign up</a>
                 </p>
             </div>
         </form>

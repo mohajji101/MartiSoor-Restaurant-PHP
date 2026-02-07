@@ -3,18 +3,29 @@
 include __DIR__ . '/../partials/header.php';
 
 $errors = [];
+// Process registration form
+// Ka shaqee foomka diiwaangelinta
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $name = trim($_POST['name'] ?? '');
     $email = trim($_POST['email'] ?? '');
     $password = $_POST['password'] ?? '';
     $confirm_password = $_POST['confirm_password'] ?? '';
 
-    if (empty($name)) $errors[] = "Name is required.";
-    if (empty($email)) $errors[] = "Email is required.";
-    if (empty($password)) $errors[] = "Password is required.";
-    if ($password !== $confirm_password) $errors[] = "Passwords do not match.";
-    if (!verify_csrf_token($_POST['csrf_token'] ?? '')) $errors[] = "Invalid CSRF token.";
+    // Validation
+    // Hubinta
+    if (empty($name))
+        $errors[] = "Name is required.";
+    if (empty($email))
+        $errors[] = "Email is required.";
+    if (empty($password))
+        $errors[] = "Password is required.";
+    if ($password !== $confirm_password)
+        $errors[] = "Passwords do not match.";
+    if (!verify_csrf_token($_POST['csrf_token'] ?? ''))
+        $errors[] = "Invalid CSRF token.";
 
+    // Password strength check
+    // Hubinta awoodda furaha
     if (!empty($password)) {
         if (!preg_match('/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z0-9]+$/', $password)) {
             $errors[] = "Password must contain uppercase, lowercase, and numbers. No special characters allowed.";
@@ -26,15 +37,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (empty($errors)) {
         $pdo = get_db_connection();
         // Check if email exists
+        // Hubi haddii email-ka horey loo diiwaangeliyay
         $stmt = $pdo->prepare("SELECT id FROM users WHERE email = ?");
         $stmt->execute([$email]);
         if ($stmt->fetch()) {
             $errors[] = "Email already registered.";
         } else {
+            // Hash password and insert user
+            // Qari furaha oo geli isticmaalaha database-ka
             $hashed_password = password_hash($password, PASSWORD_DEFAULT);
             $stmt = $pdo->prepare("INSERT INTO users (name, email, password) VALUES (?, ?, ?)");
             $stmt->execute([$name, $email, $hashed_password]);
-            
+
+            // Auto login after registration
+            // Toos u geli (login) kadib diiwaangelinta
             $_SESSION['user'] = [
                 'id' => $pdo->lastInsertId(),
                 'name' => $name,
@@ -56,14 +72,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 Join our gourmet community today
             </p>
         </div>
-        
+
         <?php if (!empty($errors)): ?>
             <div class="bg-red-50 border-l-4 border-red-500 p-4 mb-4">
                 <div class="flex">
                     <div class="flex-shrink-0"><i class="fas fa-exclamation-circle text-red-500"></i></div>
                     <div class="ml-3">
                         <p class="text-sm text-red-700">
-                            <?php foreach ($errors as $error) echo htmlspecialchars($error) . '<br>'; ?>
+                            <?php foreach ($errors as $error)
+                                echo htmlspecialchars($error) . '<br>'; ?>
                         </p>
                     </div>
                 </div>
@@ -75,33 +92,46 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <div class="space-y-4">
                 <div>
                     <label for="name" class="block text-sm font-medium text-slate-700">Full Name</label>
-                    <input id="name" name="name" type="text" value="<?php echo htmlspecialchars($name ?? ''); ?>" required class="mt-1 block w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition" placeholder="John Doe">
+                    <input id="name" name="name" type="text" value="<?php echo htmlspecialchars($name ?? ''); ?>"
+                        required
+                        class="mt-1 block w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition"
+                        placeholder="John Doe">
                 </div>
                 <div>
                     <label for="email" class="block text-sm font-medium text-slate-700">Email address</label>
-                    <input id="email" name="email" type="email" value="<?php echo htmlspecialchars($email ?? ''); ?>" required class="mt-1 block w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition" placeholder="john@example.com">
+                    <input id="email" name="email" type="email" value="<?php echo htmlspecialchars($email ?? ''); ?>"
+                        required
+                        class="mt-1 block w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition"
+                        placeholder="john@example.com">
                 </div>
                 <div>
                     <label for="password" class="block text-sm font-medium text-slate-700">Password</label>
-                    <input id="password" name="password" type="password" required class="mt-1 block w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition" placeholder="••••••••">
+                    <input id="password" name="password" type="password" required
+                        class="mt-1 block w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition"
+                        placeholder="••••••••">
                     <div id="password-feedback" class="mt-2 text-xs font-bold hidden"></div>
                 </div>
                 <div>
-                    <label for="confirm_password" class="block text-sm font-medium text-slate-700">Confirm Password</label>
-                    <input id="confirm_password" name="confirm_password" type="password" required class="mt-1 block w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition" placeholder="••••••••">
+                    <label for="confirm_password" class="block text-sm font-medium text-slate-700">Confirm
+                        Password</label>
+                    <input id="confirm_password" name="confirm_password" type="password" required
+                        class="mt-1 block w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition"
+                        placeholder="••••••••">
                     <div id="match-feedback" class="mt-2 text-xs font-bold hidden"></div>
                 </div>
             </div>
 
             <div>
-                <button type="submit" id="submit-btn" class="group relative w-full flex justify-center py-4 px-4 border border-transparent text-sm font-bold rounded-xl text-white bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 transition shadow-lg shadow-orange-200">
+                <button type="submit" id="submit-btn"
+                    class="group relative w-full flex justify-center py-4 px-4 border border-transparent text-sm font-bold rounded-xl text-white bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 transition shadow-lg shadow-orange-200">
                     Sign up
                 </button>
             </div>
-            
+
             <div class="text-center">
                 <p class="text-sm text-slate-600">
-                    Already have an account? <a href="./login" class="font-bold text-orange-600 hover:text-orange-500 transition">Log in</a>
+                    Already have an account? <a href="./login"
+                        class="font-bold text-orange-600 hover:text-orange-500 transition">Log in</a>
                 </p>
             </div>
         </form>
@@ -123,7 +153,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
 
                 feedback.classList.remove('hidden');
-                
+
                 if (val.length < 8) {
                     feedback.textContent = 'Weak: Must be at least 8 characters.';
                     feedback.className = 'mt-2 text-xs font-bold text-red-500';
@@ -143,7 +173,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     matchFeedback.classList.add('hidden');
                     return;
                 }
-                
+
                 matchFeedback.classList.remove('hidden');
 
                 if (val !== passwordInput.value) {

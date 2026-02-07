@@ -4,18 +4,27 @@ include 'partials/header.php';
 
 $cart = $_SESSION['cart'] ?? [];
 $subtotal = 0;
+
+// Calculate Subtotal
+// Xisaabi wadarta guud ee alaabta
 foreach ($cart as $item) {
     $subtotal += $item['price'] * $item['quantity'];
 }
+
 $pdo = get_db_connection();
+// Get delivery settings
+// Soo qaado habeynta gaarsiinta
 $delivery_fee_setting = get_setting($pdo, 'delivery_fee', '0.00');
 $free_delivery_threshold_setting = get_setting($pdo, 'free_delivery_threshold', '0.00');
 
 $delivery_fee = (float)$delivery_fee_setting;
 $free_delivery_threshold = (float)$free_delivery_threshold_setting;
 
-// Calculate shipping: if subtotal >= threshold (and threshold > 0), free shipping. Else use fee.
+// Calculate Shipping
+// Xisaabi lacagta gaarsiinta
 if ($subtotal > 0) {
+    // Check for free delivery threshold
+    // Hubi heerka gaarsiinta bilaashka ah
     if ($free_delivery_threshold > 0 && $subtotal >= $free_delivery_threshold) {
         $shipping = 0;
     } else {

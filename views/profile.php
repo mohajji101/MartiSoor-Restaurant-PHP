@@ -11,6 +11,7 @@ $errors = [];
 $success = "";
 
 // Fetch user data
+// Soo qaado xogta isticmaalaha
 $stmt = $pdo->prepare("SELECT * FROM users WHERE id = ?");
 $stmt->execute([$user_id]);
 $user = $stmt->fetch();
@@ -21,12 +22,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $current_password = $_POST['current_password'] ?? '';
     $new_password = $_POST['new_password'] ?? '';
 
-    if (empty($name)) $errors[] = "Name is required.";
-    if (empty($email)) $errors[] = "Email is required.";
+    if (empty($name))
+        $errors[] = "Name is required.";
+    if (empty($email))
+        $errors[] = "Email is required.";
 
     // Update basic info
+    // Cusbooneysii macluumaadka aasaasiga ah
     if (empty($errors)) {
         // Check if email is already used by another user
+        // Hubi haddii email-ka uu isticmaalayo qof kale
         $stmt = $pdo->prepare("SELECT id FROM users WHERE email = ? AND id != ?");
         $stmt->execute([$email, $user_id]);
         if ($stmt->fetch()) {
@@ -41,9 +46,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     // Handle password change
+    // Xakamee badalida furaha
     if (!empty($new_password)) {
         if (password_verify($current_password, $user['password'])) {
             // Strong password validation
+            // Hubinta awoodda furaha
             if (!preg_match('/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z0-9]+$/', $new_password)) {
                 $errors[] = "New password must contain uppercase, lowercase, and numbers. No special characters.";
             } elseif (strlen($new_password) < 8) {
@@ -76,7 +83,8 @@ include __DIR__ . '/partials/header.php';
                     <div class="flex-shrink-0"><i class="fas fa-exclamation-circle text-red-500"></i></div>
                     <div class="ml-3">
                         <p class="text-sm text-red-700">
-                            <?php foreach ($errors as $error) echo htmlspecialchars($error) . '<br>'; ?>
+                            <?php foreach ($errors as $error)
+                                echo htmlspecialchars($error) . '<br>'; ?>
                         </p>
                     </div>
                 </div>
@@ -98,12 +106,15 @@ include __DIR__ . '/partials/header.php';
             <!-- Summary Card -->
             <div class="lg:col-span-1">
                 <div class="bg-white rounded-[2rem] shadow-xl border border-slate-100 p-8 text-center sticky top-24">
-                    <div class="w-32 h-32 bg-orange-100 text-orange-600 rounded-full flex items-center justify-center mx-auto mb-6 text-4xl font-bold">
+                    <div
+                        class="w-32 h-32 bg-orange-100 text-orange-600 rounded-full flex items-center justify-center mx-auto mb-6 text-4xl font-bold">
                         <?php echo strtoupper(substr($user['name'], 0, 1)); ?>
                     </div>
-                    <h2 class="text-2xl font-bold text-slate-900 mb-1"><?php echo htmlspecialchars($user['name']); ?></h2>
+                    <h2 class="text-2xl font-bold text-slate-900 mb-1"><?php echo htmlspecialchars($user['name']); ?>
+                    </h2>
                     <p class="text-slate-500 mb-6"><?php echo htmlspecialchars($user['email']); ?></p>
-                    <div class="inline-flex items-center px-4 py-1 rounded-full bg-slate-100 text-slate-600 text-xs font-bold uppercase tracking-wider">
+                    <div
+                        class="inline-flex items-center px-4 py-1 rounded-full bg-slate-100 text-slate-600 text-xs font-bold uppercase tracking-wider">
                         <?php echo htmlspecialchars($user['role']); ?>
                     </div>
                 </div>
@@ -115,33 +126,47 @@ include __DIR__ . '/partials/header.php';
                     <form action="" method="POST" class="space-y-8">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div class="md:col-span-2">
-                                <h3 class="text-xl font-bold text-slate-900 border-b border-slate-50 pb-4 mb-4">General Information</h3>
+                                <h3 class="text-xl font-bold text-slate-900 border-b border-slate-50 pb-4 mb-4">General
+                                    Information</h3>
                             </div>
                             <div class="md:col-span-1">
-                                <label for="name" class="block text-sm font-bold text-slate-700 mb-2">Display Name</label>
-                                <input type="text" id="name" name="name" value="<?php echo htmlspecialchars($user['name']); ?>" required class="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-orange-500 focus:outline-none transition">
+                                <label for="name" class="block text-sm font-bold text-slate-700 mb-2">Display
+                                    Name</label>
+                                <input type="text" id="name" name="name"
+                                    value="<?php echo htmlspecialchars($user['name']); ?>" required
+                                    class="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-orange-500 focus:outline-none transition">
                             </div>
                             <div class="md:col-span-1">
-                                <label for="email" class="block text-sm font-bold text-slate-700 mb-2">Email Address</label>
-                                <input type="email" id="email" name="email" value="<?php echo htmlspecialchars($user['email']); ?>" required class="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-orange-500 focus:outline-none transition">
+                                <label for="email" class="block text-sm font-bold text-slate-700 mb-2">Email
+                                    Address</label>
+                                <input type="email" id="email" name="email"
+                                    value="<?php echo htmlspecialchars($user['email']); ?>" required
+                                    class="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-orange-500 focus:outline-none transition">
                             </div>
 
                             <div class="md:col-span-2 mt-8">
-                                <h3 class="text-xl font-bold text-slate-900 border-b border-slate-50 pb-4 mb-4">Change Password</h3>
-                                <p class="text-slate-500 text-sm mb-6">Leave new password blank if you don't want to change it.</p>
+                                <h3 class="text-xl font-bold text-slate-900 border-b border-slate-50 pb-4 mb-4">Change
+                                    Password</h3>
+                                <p class="text-slate-500 text-sm mb-6">Leave new password blank if you don't want to
+                                    change it.</p>
                             </div>
                             <div class="md:col-span-2">
-                                <label for="current_password" class="block text-sm font-bold text-slate-700 mb-2">Current Password</label>
-                                <input type="password" id="current_password" name="current_password" class="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-orange-500 focus:outline-none transition">
+                                <label for="current_password"
+                                    class="block text-sm font-bold text-slate-700 mb-2">Current Password</label>
+                                <input type="password" id="current_password" name="current_password"
+                                    class="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-orange-500 focus:outline-none transition">
                             </div>
                             <div class="md:col-span-2">
-                                <label for="new_password" class="block text-sm font-bold text-slate-700 mb-2">New Password (Uppercase, Lowercase, Number)</label>
-                                <input type="password" id="new_password" name="new_password" class="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-orange-500 focus:outline-none transition">
+                                <label for="new_password" class="block text-sm font-bold text-slate-700 mb-2">New
+                                    Password (Uppercase, Lowercase, Number)</label>
+                                <input type="password" id="new_password" name="new_password"
+                                    class="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-orange-500 focus:outline-none transition">
                             </div>
                         </div>
 
                         <div class="pt-8 border-t border-slate-100">
-                            <button type="submit" class="w-full md:w-auto bg-orange-600 text-white px-10 py-4 rounded-2xl font-bold shadow-lg shadow-orange-200 hover:bg-orange-700 transition">
+                            <button type="submit"
+                                class="w-full md:w-auto bg-orange-600 text-white px-10 py-4 rounded-2xl font-bold shadow-lg shadow-orange-200 hover:bg-orange-700 transition">
                                 Update My Profile
                             </button>
                         </div>

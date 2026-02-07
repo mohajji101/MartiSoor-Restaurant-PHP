@@ -55,6 +55,8 @@
                     <?php endif; ?>
                     
                     <?php 
+                    // Calculate cart count
+                    // Xisaabi tirada alaabta saanyada ku jirta
                     $cart_count = 0;
                     if (isset($_SESSION['cart'])) {
                         foreach ($_SESSION['cart'] as $item) {
